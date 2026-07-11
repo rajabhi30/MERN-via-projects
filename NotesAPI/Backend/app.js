@@ -10,6 +10,9 @@ app.use(express.json());
 
 connectDB();
 
+const cors = require("cors");
+app.use(cors());
+
 
 app.get("/",(req,res)=>{
     res.send("Hello World");
@@ -18,7 +21,7 @@ app.get("/",(req,res)=>{
 
 app.post("/addTasks", async(req,res)=>{
     const{title,description,completed}=req.body;
-    if(!title||!description||!completed){
+    if(!title||!description){
         return res.status(400).send("Please fill all the fields");
     }
     const todo=new Todo({
@@ -35,14 +38,14 @@ app.get("/getAllTasks",async(req,res)=>{
     res.send(todos);
 })
 
-app.put("/updateTask/:id",async(req,res)=>{
-    const{title,description,completed}=req.body;
-    const todo=await Todo.findByIdAndUpdate(req.params.id,{
-        title,
-        description,
-        completed
-    })
-    res.send("Task updated successfully");
+app.put("/toggle/:id", async (req, res) => {
+    const todo = await Todo.findById(req.params.id);
+    if (!todo) {
+        return res.status(404).send("Task not found");
+    }
+    todo.completed = !todo.completed;
+    await todo.save();
+    res.send("Task toggled successfully");
 })
 
 app.delete("/delete/:id",async(req,res)=>{
