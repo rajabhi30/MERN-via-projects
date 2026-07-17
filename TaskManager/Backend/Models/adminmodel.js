@@ -14,6 +14,10 @@ const adminSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    role: {
+        type: String,
+        required: true
+    },
     users: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'

@@ -1,11 +1,14 @@
 const jwt = require('jsonwebtoken');
 
 const isLoggedIn = (req, res, next) => {
-    const token = req.headers['authorization'];
+    let token = req.cookies?.token || req.headers['authorization'];
     if (!token) {
         return res.status(401).send("Access denied. No token provided.");
     }
-    jwt.verify(token, 'secret_key', (err, decoded) => {
+    if (token.startsWith('Bearer ')) {
+        token = token.slice(7).trim();
+    }
+    jwt.verify(token, 'secret key', (err, decoded) => {
         if (err) {
             return res.status(403).send("Invalid token.");
         }
@@ -14,4 +17,11 @@ const isLoggedIn = (req, res, next) => {
     });
 };
 
-module.exports = isLoggedIn;
+const isAdmin = (req, res, next) => {
+    if (req.user.role !== "admin") {
+        return res.status(403).send("Access denied. Not an admin.");
+    }
+    next();
+};
+
+module.exports = { isLoggedIn, isAdmin };
