@@ -1,8 +1,7 @@
 const express = require("express");
 const app = express();
 const connectDB = require("./connectDB");
-const isLoggedIn = require("./middleware");
-const isAdmin = require("./middleware");
+const { isLoggedIn, isAdmin , isAdminLoggedIN} = require("./middleware");
 
 const userSchema = require("./Models/usermodel");
 const taskSchema = require("./Models/taskmodel");
@@ -62,6 +61,11 @@ app.post("/register", (req, res) => {
                 password: hashedPassword
             });
             newUser.save()
+                .then((savedUser) => {
+                    return adminSchema.updateMany({},{
+                        $addToSet:{users:savedUser._id}
+                    });
+                })
                 .then(() => {
                     res.status(201).send("User registered successfully");
                 })
@@ -197,8 +201,30 @@ app.get("/profile", isLoggedIn, async (req, res) => {
 });
 
 
-app.get("/dashboard", isLoggedIn, isAdmin, (req, res) => {
+app.get("/dashboard",isAdminLoggedIN,isAdmin, (req, res) => {
     res.json({ message: "Admin dashboard" });
+})
+app.post("/dashboard/create",isAdminLoggedIN,isAdmin, (req, res) => {
+    const {title,description,status,userId}=req.body;
+    const task=new taskSchema({
+        title,
+        description,
+        status,
+        userId
+    });
+    task.save()
+    .then((savedTask)=>{
+        return userSchema.findByIdAndUpdate(userId,{
+            $push:{Tasks:savedTask._id}
+        });
+    })
+    .then(()=>{
+        res.status(201).send("Task created successfully");
+    })
+    .catch((error)=>{
+        console.error(error);
+        res.status(500).send("Error occurred while saving task");
+    })
 })
 
 connectDB()
