@@ -1,7 +1,7 @@
 const express = require("express");
 const app = express();
 const connectDB = require("./connectDB");
-const { isLoggedIn, isAdmin , isAdminLoggedIN} = require("./middleware");
+const { isLoggedIn, isAdmin, isAdminLoggedIN } = require("./middleware");
 
 const userSchema = require("./Models/usermodel");
 const taskSchema = require("./Models/taskmodel");
@@ -15,6 +15,12 @@ app.use(cookieParser());
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+const cors = require("cors");
+
+app.use(cors({
+    origin: "http://localhost:5173",
+    credentials: true
+}));
 
 const PORT = process.env.PORT || 3000;
 
@@ -62,8 +68,8 @@ app.post("/register", (req, res) => {
             });
             newUser.save()
                 .then((savedUser) => {
-                    return adminSchema.updateMany({},{
-                        $addToSet:{users:savedUser._id}
+                    return adminSchema.updateMany({}, {
+                        $addToSet: { users: savedUser._id }
                     });
                 })
                 .then(() => {
@@ -201,30 +207,30 @@ app.get("/profile", isLoggedIn, async (req, res) => {
 });
 
 
-app.get("/dashboard",isAdminLoggedIN,isAdmin, (req, res) => {
+app.get("/dashboard", isAdminLoggedIN, isAdmin, (req, res) => {
     res.json({ message: "Admin dashboard" });
 })
-app.post("/dashboard/create",isAdminLoggedIN,isAdmin, (req, res) => {
-    const {title,description,status,userId}=req.body;
-    const task=new taskSchema({
+app.post("/dashboard/create", isAdminLoggedIN, isAdmin, (req, res) => {
+    const { title, description, status, userId } = req.body;
+    const task = new taskSchema({
         title,
         description,
         status,
         userId
     });
     task.save()
-    .then((savedTask)=>{
-        return userSchema.findByIdAndUpdate(userId,{
-            $push:{Tasks:savedTask._id}
-        });
-    })
-    .then(()=>{
-        res.status(201).send("Task created successfully");
-    })
-    .catch((error)=>{
-        console.error(error);
-        res.status(500).send("Error occurred while saving task");
-    })
+        .then((savedTask) => {
+            return userSchema.findByIdAndUpdate(userId, {
+                $push: { Tasks: savedTask._id }
+            });
+        })
+        .then(() => {
+            res.status(201).send("Task created successfully");
+        })
+        .catch((error) => {
+            console.error(error);
+            res.status(500).send("Error occurred while saving task");
+        })
 })
 
 connectDB()

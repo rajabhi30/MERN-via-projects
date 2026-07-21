@@ -1,15 +1,25 @@
 import React, { useState } from 'react'
+import axios from 'axios'
 
-const Register = () => {
+const Register = ({ isRegistered }) => {
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [role, setRole] = useState('');
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         console.log(username, email, password, role);
 
+        try {
+            const res = await axios.post('http://localhost:3000/register', {
+                name: username, email, password, role
+            });
+            console.log(res.data);
+            isRegistered();
+            } catch (err) {
+            console.log(err);
+        }
 
 
 
@@ -96,9 +106,9 @@ const Register = () => {
                     {/* Footer link */}
                     <p className="text-center text-sm text-zinc-500 mt-1">
                         Already have an account?{' '}
-                        <a href="#" className="text-purple-400 hover:text-purple-300 font-medium transition-colors duration-200">
+                        <span onClick={isRegistered} className="text-purple-400 hover:text-purple-300 font-medium transition-colors duration-200 cursor-pointer">
                             Login here
-                        </a>
+                        </span>
                     </p>
                 </form>
             </div>

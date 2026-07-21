@@ -1,7 +1,8 @@
 import React from 'react'
+import axios from 'axios'
 import TaskCard from './TaskCard'
 
-const Userprofile = () => {
+const Userprofile = ({isLogged}) => {
     // Placeholder data — replace with API data later
     const username = 'Raj Abhi'
     const tasks = [
@@ -17,6 +18,15 @@ const Userprofile = () => {
         completed: tasks.filter(t => t.status === 'completed').length,
         inProgress: tasks.filter(t => t.status === 'in progress').length,
         pending: tasks.filter(t => t.status === 'pending').length,
+    }
+
+    const handlelogout = async() => {
+        isLogged();
+        try {
+            await axios.get('http://localhost:3000/logout', { withCredentials: true });
+        } catch (error) {
+            console.log(error);
+        }
     }
 
     return (
@@ -36,7 +46,7 @@ const Userprofile = () => {
                             👋 {username}
                         </h1>
                     </div>
-                    <button className="bg-red-600 hover:bg-red-500 text-white text-sm font-semibold px-5 py-2.5 rounded-xl shadow-lg shadow-red-500/25 hover:shadow-red-500/40 transition-all duration-300 cursor-pointer active:scale-[0.98]">
+                    <button onClick={handlelogout} className="bg-red-600 hover:bg-red-500 text-white text-sm font-semibold px-5 py-2.5 rounded-xl shadow-lg shadow-red-500/25 hover:shadow-red-500/40 transition-all duration-300 cursor-pointer active:scale-[0.98]">
                         Logout
                     </button>
                 </div>

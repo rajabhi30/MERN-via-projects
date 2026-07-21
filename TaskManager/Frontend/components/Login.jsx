@@ -1,13 +1,28 @@
 import React, { useState } from 'react'
-
-const Login = () => {
+import axios from 'axios';
+const Login = ({isLogged, isAdmin, isRegistered}) => {
     const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+    const [password, setPassword] = useState('');   
     const [role, setRole] = useState('');
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async(e) => {
         e.preventDefault();
         console.log(email, password, role);
+
+        try {
+            const res = await axios.post('http://localhost:3000/login', { email, password, role }, { withCredentials: true });
+            console.log(res.data);
+            isLogged(true);
+            if (role === "admin") {
+                isAdmin(true);
+            }
+        } catch (err) {
+            console.log(err);
+        } finally {
+            setEmail('');
+            setPassword('');
+            setRole('');
+        }
 
 
 
@@ -82,9 +97,9 @@ const Login = () => {
                     {/* Footer link */}
                     <p className="text-center text-sm text-zinc-500 mt-1">
                         Don't have an account?{' '}
-                        <a href="#" className="text-blue-400 hover:text-blue-300 font-medium transition-colors duration-200">
+                        <span onClick={isRegistered} className="text-blue-400 hover:text-blue-300 font-medium transition-colors duration-200 cursor-pointer">
                             Register here
-                        </a>
+                        </span>
                     </p>
                 </form>
             </div>

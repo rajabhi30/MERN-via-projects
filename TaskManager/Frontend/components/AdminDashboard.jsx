@@ -1,7 +1,8 @@
 import React, { useState } from 'react'
+import axios from 'axios'
 import UserSummaryCard from './UserSummaryCard'
 
-const AdminDashboard = () => {
+const AdminDashboard = ({isLogged, isAdmin}) => {
     const [title, setTitle] = useState('')
     const [description, setDescription] = useState('')
     const [status, setStatus] = useState('pending')
@@ -22,6 +23,16 @@ const AdminDashboard = () => {
         { _id: '3', username: 'Priya Verma', assigned: 4, pending: 3, completed: 1 },
         { _id: '4', username: 'Sneha Gupta', assigned: 2, pending: 0, completed: 2 },
     ]
+
+    const handlelogout = async() => {
+        isLogged();
+        isAdmin();
+        try {
+            await axios.get('http://localhost:3000/logout', { withCredentials: true });
+        } catch (error) {
+            console.log(error);
+        }
+    }
 
     const handleSubmit = (e) => {
         e.preventDefault()
@@ -51,7 +62,7 @@ const AdminDashboard = () => {
                     <h1 className="text-3xl font-bold text-white tracking-tight">
                         📋 Task Manager Dashboard
                     </h1>
-                    <button className="bg-red-600 hover:bg-red-500 text-white text-sm font-semibold px-5 py-2.5 rounded-xl shadow-lg shadow-red-500/25 hover:shadow-red-500/40 transition-all duration-300 cursor-pointer active:scale-[0.98]">
+                    <button onClick={handlelogout} className="bg-red-600 hover:bg-red-500 text-white text-sm font-semibold px-5 py-2.5 rounded-xl shadow-lg shadow-red-500/25 hover:shadow-red-500/40 transition-all duration-300 cursor-pointer active:scale-[0.98]">
                         Logout
                     </button>
                 </div>
