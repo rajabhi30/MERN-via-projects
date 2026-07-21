@@ -1,1 +1,62 @@
 @import "tailwindcss";
+
+@theme {
+  --color-dark-950: #0a0a0a;
+  --color-dark-900: #111111;
+  --color-dark-800: #1a1a1a;
+  --color-dark-700: #2a2a2a;
+  --color-dark-600: #3a3a3a;
+  --color-dark-500: #555555;
+  --color-dark-400: #777777;
+  --color-dark-300: #999999;
+  --color-crimson-600: #dc2626;
+  --color-crimson-500: #ef4444;
+  --color-crimson-400: #f87171;
+  --color-crimson-700: #b91c1c;
+  --color-crimson-800: #991b1b;
+  --color-amber-warm: #f59e0b;
+}
+
+/* Global styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #111111 100%);
+  color: #e5e5e5;
+  font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  min-height: 100vh;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #1a1a1a;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #dc2626, #991b1b);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #ef4444, #dc2626);
+}
+
+/* Input/textarea focus glow */
+input:focus,
+textarea:focus {
+  box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.3), 0 0 20px rgba(220, 38, 38, 0.1);
+}
+
+/* Selection color */
+::selection {
+  background: rgba(220, 38, 38, 0.4);
+  color: #ffffff;
+}
