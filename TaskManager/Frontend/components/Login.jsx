@@ -10,7 +10,7 @@ const Login = ({isLogged, isAdmin, isRegistered}) => {
         console.log(email, password, role);
 
         try {
-            const res = await axios.post('http://localhost:3000/login', { email, password, role }, { withCredentials: true });
+            const res = await axios.post('https://ems-ovz5.onrender.com/login', { email, password, role }, { withCredentials: true });
             console.log(res.data);
             isLogged(true);
             if (role === "admin") {

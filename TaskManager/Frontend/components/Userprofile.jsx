@@ -20,7 +20,7 @@ const Userprofile = ({isLogged}) => {
     const handlelogout = async() => {
         isLogged();
         try {
-            await axios.get('http://localhost:3000/logout', { withCredentials: true });
+            await axios.get('https://ems-ovz5.onrender.com/logout', { withCredentials: true });
         } catch (error) {
             console.log(error);
         }
@@ -29,7 +29,7 @@ const Userprofile = ({isLogged}) => {
     useEffect(() => {
         async function fetchuser(){
             try {
-                const response = await axios.get('http://localhost:3000/profile', { withCredentials: true });
+                const response = await axios.get('https://ems-ovz5.onrender.com/profile', { withCredentials: true });
                 setuser(response.data);
                 setTasks(response.data.Tasks || []);
             } catch (error) {

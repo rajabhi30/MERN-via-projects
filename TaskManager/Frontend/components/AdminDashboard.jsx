@@ -26,7 +26,7 @@ const AdminDashboard = ({isLogged, isAdmin}) => {
 
     const fetchDetails = async() => {
         try {
-            const response = await axios.get('http://localhost:3000/dashboard', { withCredentials: true });
+            const response = await axios.get('https://ems-ovz5.onrender.com/dashboard', { withCredentials: true });
             setAdmin(response.data.admin);
             setUsers(response.data.users || []);
         } catch (error) {
@@ -42,7 +42,7 @@ const AdminDashboard = ({isLogged, isAdmin}) => {
         isLogged();
         isAdmin();
         try {
-            await axios.get('http://localhost:3000/logout', { withCredentials: true });
+            await axios.get('https://ems-ovz5.onrender.com/logout', { withCredentials: true });
         } catch (error) {
             console.log(error);
         }
@@ -54,7 +54,7 @@ const AdminDashboard = ({isLogged, isAdmin}) => {
 
         // TODO: API call to assign task
         try {
-            const response = await axios.post('http://localhost:3000/dashboard/create', {
+            const response = await axios.post('https://ems-ovz5.onrender.com/dashboard/create', {
                 title,
                 description,
                 status,

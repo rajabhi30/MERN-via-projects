@@ -12,7 +12,7 @@ const Register = ({ isRegistered }) => {
         console.log(username, email, password, role);
 
         try {
-            const res = await axios.post('http://localhost:3000/register', {
+            const res = await axios.post('https://ems-ovz5.onrender.com/register', {
                 name: username, email, password, role
             });
             console.log(res.data);
