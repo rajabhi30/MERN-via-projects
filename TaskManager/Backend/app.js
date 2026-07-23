@@ -18,7 +18,7 @@ app.use(express.urlencoded({ extended: true }));
 const cors = require("cors");
 
 app.use(cors({
-    origin: "https://ems-sigma-five.vercel.app?_vercel_share=sCTjLTItYULeyZ8yfqhJjVwE5NOAPfR1",
+    origin: "https://ems-sigma-five.vercel.app",
     credentials: true
 }));
 
