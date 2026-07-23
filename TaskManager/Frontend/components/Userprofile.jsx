@@ -1,17 +1,14 @@
-import React from 'react'
-import axios from 'axios'
+import React, { useEffect, useState } from 'react'
 import TaskCard from './TaskCard'
+import axios from 'axios'
 
 const Userprofile = ({isLogged}) => {
     // Placeholder data — replace with API data later
     const username = 'Raj Abhi'
-    const tasks = [
-        { _id: '1', title: 'Setup Backend API', description: 'Create REST API endpoints for user authentication and task CRUD operations using Express and MongoDB.', status: 'completed' },
-        { _id: '2', title: 'Design Frontend UI', description: 'Build Register, Login, and Dashboard components with a dark glassmorphism theme using React and Tailwind.', status: 'in progress' },
-        { _id: '3', title: 'Connect Frontend to Backend', description: 'Integrate Axios for API calls, handle JWT tokens, and wire up form submissions to backend routes.', status: 'pending' },
-        { _id: '4', title: 'Add Task CRUD Features', description: 'Implement create, read, update, and delete functionality for tasks on the dashboard.', status: 'pending' },
-        { _id: '5', title: 'Deploy to Production', description: 'Deploy backend on Render and frontend on Vercel. Configure environment variables and CORS.', status: 'pending' },
-    ]
+    
+
+    const [user, setuser] = useState(null);
+    const [tasks, setTasks] = useState([]);
 
     const taskCounts = {
         total: tasks.length,
@@ -19,7 +16,7 @@ const Userprofile = ({isLogged}) => {
         inProgress: tasks.filter(t => t.status === 'in progress').length,
         pending: tasks.filter(t => t.status === 'pending').length,
     }
-
+    
     const handlelogout = async() => {
         isLogged();
         try {
@@ -28,6 +25,19 @@ const Userprofile = ({isLogged}) => {
             console.log(error);
         }
     }
+
+    useEffect(() => {
+        async function fetchuser(){
+            try {
+                const response = await axios.get('http://localhost:3000/profile', { withCredentials: true });
+                setuser(response.data);
+                setTasks(response.data.Tasks || []);
+            } catch (error) {
+                console.log(error);
+            }
+        }
+        fetchuser();
+    }, []);
 
     return (
         <div className="w-full min-h-screen bg-black relative overflow-hidden">
@@ -43,7 +53,7 @@ const Userprofile = ({isLogged}) => {
                     <div>
                         <p className="text-sm text-zinc-500 font-medium mb-1">Welcome back</p>
                         <h1 className="text-3xl font-bold text-white tracking-tight">
-                            👋 {username}
+                            👋 {user?.name || 'Loading...'}
                         </h1>
                     </div>
                     <button onClick={handlelogout} className="bg-red-600 hover:bg-red-500 text-white text-sm font-semibold px-5 py-2.5 rounded-xl shadow-lg shadow-red-500/25 hover:shadow-red-500/40 transition-all duration-300 cursor-pointer active:scale-[0.98]">

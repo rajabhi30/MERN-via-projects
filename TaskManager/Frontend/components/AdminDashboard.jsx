@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import axios from 'axios'
 import UserSummaryCard from './UserSummaryCard'
 
@@ -8,21 +8,35 @@ const AdminDashboard = ({isLogged, isAdmin}) => {
     const [status, setStatus] = useState('pending')
     const [assignTo, setAssignTo] = useState('')
 
-    // Placeholder users — replace with API data later
-    const users = [
-        { _id: '1', username: 'Raj Abhi' },
-        { _id: '2', username: 'Ankit Sharma' },
-        { _id: '3', username: 'Priya Verma' },
-        { _id: '4', username: 'Sneha Gupta' },
-    ]
+    const [Admin, setAdmin] = useState(null);
+    const [Users, setUsers] = useState([]);
 
-    // Placeholder summary data — replace with API data later
-    const userSummaries = [
-        { _id: '1', username: 'Raj Abhi', assigned: 5, pending: 2, completed: 3 },
-        { _id: '2', username: 'Ankit Sharma', assigned: 3, pending: 1, completed: 2 },
-        { _id: '3', username: 'Priya Verma', assigned: 4, pending: 3, completed: 1 },
-        { _id: '4', username: 'Sneha Gupta', assigned: 2, pending: 0, completed: 2 },
-    ]
+    const users = Users.map(u => ({ _id: u._id, username: u.name }));
+
+    const userSummaries = Users.map(u => {
+        const tasks = u.Tasks || [];
+        return {
+            _id: u._id,
+            username: u.name,
+            assigned: tasks.length,
+            pending: tasks.filter(t => t.status === 'pending').length,
+            completed: tasks.filter(t => t.status === 'completed').length
+        };
+    });
+
+    const fetchDetails = async() => {
+        try {
+            const response = await axios.get('http://localhost:3000/dashboard', { withCredentials: true });
+            setAdmin(response.data.admin);
+            setUsers(response.data.users || []);
+        } catch (error) {
+            console.error("Error fetching dashboard details", error);
+        }
+    }
+
+    useEffect(()=>{
+        fetchDetails();
+    },[]);
 
     const handlelogout = async() => {
         isLogged();
@@ -34,11 +48,25 @@ const AdminDashboard = ({isLogged, isAdmin}) => {
         }
     }
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async(e) => {
         e.preventDefault()
         console.log({ title, description, status, assignTo })
 
         // TODO: API call to assign task
+        try {
+            const response = await axios.post('http://localhost:3000/dashboard/create', {
+                title,
+                description,
+                status,
+                userId: assignTo
+            }, { withCredentials: true });
+            console.log(response.data);
+            
+            // Refetch details to update the summary
+            await fetchDetails();
+        } catch (error) {
+            console.error(error);
+        }
 
         setTitle('')
         setDescription('')

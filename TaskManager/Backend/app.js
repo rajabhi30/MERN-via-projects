@@ -74,6 +74,7 @@ app.post("/register", (req, res) => {
                 })
                 .then(() => {
                     res.status(201).send("User registered successfully");
+
                 })
                 .catch((error) => {
                     console.error(error);
@@ -195,7 +196,7 @@ app.get("/profile", isLoggedIn, async (req, res) => {
             return res.json(admin);
         }
 
-        const user = await userSchema.findById(req.user.id).select("_id name role");
+        const user = await userSchema.findById(req.user.id).select("_id name role Tasks").populate("Tasks");
         if (!user) {
             return res.status(404).json({ message: "User not found" });
         }
@@ -207,8 +208,15 @@ app.get("/profile", isLoggedIn, async (req, res) => {
 });
 
 
-app.get("/dashboard", isAdminLoggedIN, isAdmin, (req, res) => {
-    res.json({ message: "Admin dashboard" });
+app.get("/dashboard", isAdminLoggedIN, isAdmin, async (req, res) => {
+    try {
+        const admin = await adminSchema.findById(req.user.id).select("_id name role");
+        const users = await userSchema.find().select("-password").populate("Tasks");
+        res.json({ admin, users });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Error fetching dashboard data" });
+    }
 })
 app.post("/dashboard/create", isAdminLoggedIN, isAdmin, (req, res) => {
     const { title, description, status, userId } = req.body;
