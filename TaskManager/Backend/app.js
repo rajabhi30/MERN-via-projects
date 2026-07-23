@@ -112,7 +112,8 @@ app.post("/login", (req, res) => {
 
                     res.cookie("token", token, {
                         httpOnly: true,
-                        sameSite: "lax",
+                        sameSite: "none",
+                        secure: true,
                         maxAge: 24 * 60 * 60 * 1000
                     });
 
@@ -154,7 +155,8 @@ app.post("/login", (req, res) => {
 
                 res.cookie("token", token, {
                     httpOnly: true,
-                    sameSite: "lax",
+                    sameSite: "none",
+                    secure: true,
                     maxAge: 24 * 60 * 60 * 1000
                 });
 
@@ -177,7 +179,7 @@ app.post("/login", (req, res) => {
 
 app.get("/logout", (req, res) => {
     if (req.cookies?.token) {
-        res.clearCookie('token');
+        res.clearCookie('token', { sameSite: "none", secure: true });
         res.status(200).send("Logout successful");
         return;
     }
