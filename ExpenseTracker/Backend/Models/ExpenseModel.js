@@ -1,0 +1,16 @@
+import { Schema, model } from "mongoose";
+const expenseSchema = new Schema({
+    title: String,
+    amount: Number,
+    category: String,
+    date: Date,
+    type: String,
+    user: {
+        type: Schema.Types.ObjectId,
+        ref: "User"
+    }
+});
+
+const Expense = model("Expense", expenseSchema);
+
+export default Expense;
