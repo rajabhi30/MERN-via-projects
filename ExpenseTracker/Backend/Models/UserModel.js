@@ -6,8 +6,16 @@ const userSchema = new mongoose.Schema({
     password: String,
     expense: {
         type: [mongoose.Schema.Types.ObjectId],
-        ref: "Expense"
+        ref: "expense"
     },
+    totals:{
+        type: [{
+            amount: Number,
+            type: String,
+            enum: ["income", "expense"],
+            date: Date
+        }]
+    }
 });
 
 const User = mongoose.model("User", userSchema);

@@ -1,4 +1,4 @@
-import { Schema, model } from "mongoose";
+const { Schema, model } = require("mongoose");
 const expenseSchema = new Schema({
     title: String,
     amount: Number,
@@ -11,6 +11,6 @@ const expenseSchema = new Schema({
     }
 });
 
-const Expense = model("Expense", expenseSchema);
+const Expense = model("expense", expenseSchema);
 
-export default Expense;
+module.exports = Expense;
