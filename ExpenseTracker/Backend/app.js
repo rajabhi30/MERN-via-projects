@@ -90,8 +90,9 @@ app.post("/dashboard/create", middleware, async(req, res) => {
 
     const {title, amount, category, date, type} = req.body;
     if(title && amount && category && date && type){
-        const newExpense = new expense({title, amount, category, date, type});
+        const newExpense = new expense({title, amount, category, date, type, user: req.user.id});
         await newExpense.save();
+        
         
         res.status(201).json({ message: "Expense created successfully" });
     }else{
@@ -101,8 +102,8 @@ app.post("/dashboard/create", middleware, async(req, res) => {
 
 })
 app.get("/dashboard/history", middleware, async (req, res) => {
-    const {id} = req.user.id;
-    const {sort} = req.query
+    const id = req.user.id;
+    const {sort} = req.query;
     let sortStage = { createdAt: -1 };
 
     if (sort === "amount_desc") {
@@ -129,18 +130,19 @@ app.get("/dashboard/history", middleware, async (req, res) => {
         sortStage = { category: -1 };
     }
 
-    const expenses = await expenses.aggregate([
+    const expenses = await expense.aggregate([
       {
         $match: {
-          userId: req.user.id
+          user: new mongoose.Types.ObjectId(id)
         }
       },
       {
         $sort: sortStage
       }
     ]);
-
+    console.log(id);
     res.json(expenses);
+    console.log(expenses);
 });
 
 
